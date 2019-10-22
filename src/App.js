@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-
-// /discover/movie?sort_by=popularity.desc
-// ?api_key=7f077937236d1ffe1a9deeb64a9d2a38
-// "/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg"
+import axios from 'axios';
 
 class App extends Component {
   constructor(props) {
@@ -14,9 +11,8 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch('https://api.themoviedb.org/3/discover/movie?api_key=7f077937236d1ffe1a9deeb64a9d2a38')
-    const data = await response.json();
-    this.setState({ movies: data.results });
+    const response = await axios.get('https://api.themoviedb.org/3/discover/movie?api_key=7f077937236d1ffe1a9deeb64a9d2a38');
+    this.setState({ movies: response.data.results });    
   }
 
   render() {
