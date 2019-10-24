@@ -29,8 +29,11 @@ class App extends Component {
 
   changePage = (event) => {
     event.preventDefault();
-    const data = new FormData(event.target);
-    this.getPopularMovies(data.get('page'));
+    this.getPopularMovies(this.state.page);
+  }
+
+  handleChange = (event) => {
+    this.setState({ page: event.target.value })
   }
 
   render() {
@@ -40,7 +43,7 @@ class App extends Component {
         <Router>
           <form onSubmit={this.changePage}>
             <label htmlFor="page">Page</label>
-            <input type="text" id="page" name="page" defaultValue={page}/>
+            <input type="text" id="page" name="page" value={page} onChange={this.handleChange} />
             <button type="submit">Go</button>
           </form>
           {movies.map(movie => <MovieSummary key={movie.id} {...movie} />)}
