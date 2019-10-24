@@ -3,10 +3,10 @@ import './App.css';
 import axios from 'axios';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
+  // Switch,
+  // Route,
 } from "react-router-dom";
-import MoviePage from './components/MoviePage/MoviePage';
+// import MoviePage from './components/MoviePage/MoviePage';
 import MovieSummary from './components/MovieSummary/MovieSummary';
 
 class App extends Component {
@@ -14,26 +14,36 @@ class App extends Component {
     super(props);
     this.state = {
       movies: [],
+      page: 1,
     }
   }
 
-  async componentDidMount() {
-    const response = await axios.get('https://api.themoviedb.org/3/discover/movie?api_key=7f077937236d1ffe1a9deeb64a9d2a38');
-    this.setState({ movies: response.data.results });    
+  componentDidMount() {
+    this.getPopularMovies();
+  }
+
+  async getPopularMovies(page = this.state.page) {
+    const response = await axios.get(`https://api.themoviedb.org/4/discover/movie?api_key=7f077937236d1ffe1a9deeb64a9d2a38&page=${page}`);
+    this.setState({ movies: response.data.results, page });   
+  }
+
+  changePage = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    this.getPopularMovies(data.get('page'));
   }
 
   render() {
+    const { page, movies } = this.state;
     return (
       <div className="App">
         <Router>
-          <Switch>
-            <Route exact path="/">
-              {this.state.movies.map(movie => <MovieSummary key={movie.id} {...movie} />)}
-            </Route>
-            <Route path="/movie">
-              {this.state.movies.map(movie => <MoviePage key={movie.id} {...movie} />)}
-            </Route>
-          </Switch>
+          <form onSubmit={this.changePage}>
+            <label htmlFor="page">Page</label>
+            <input type="text" id="page" name="page" defaultValue={page}/>
+            <button type="submit">Go</button>
+          </form>
+          {movies.map(movie => <MovieSummary key={movie.id} {...movie} />)}
         </Router>
       </div>
     );
