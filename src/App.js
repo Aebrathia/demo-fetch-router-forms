@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import MoviePage from './components/MoviePage/MoviePage';
+import MovieSummary from './components/MovieSummary/MovieSummary';
 
 class App extends Component {
   constructor(props) {
@@ -18,13 +25,16 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.movies.map(movie => (
-          <div key={movie.id} className="movie">
-            <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>
-            <h2>{movie.title}</h2>
-            <p>{movie.overview}</p>
-          </div>
-        ))}
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              {this.state.movies.map(movie => <MovieSummary key={movie.id} {...movie} />)}
+            </Route>
+            <Route path="/movie">
+              {this.state.movies.map(movie => <MoviePage key={movie.id} {...movie} />)}
+            </Route>
+          </Switch>
+        </Router>
       </div>
     );
   }
